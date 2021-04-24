@@ -25,7 +25,7 @@ public class Principal {
 
 		try {
 			// LECTURA:
-			System.out.println("\n A CONTINUACIÓN LEE LAS LINEAS: ");
+			System.out.println("\nLee Archivo: ");
 			archivo.escribeArchivo(archivo.leeArchivo());
 		} catch (Exception e) {
 			e.printStackTrace();

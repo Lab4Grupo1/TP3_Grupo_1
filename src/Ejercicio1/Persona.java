@@ -2,7 +2,7 @@ package Ejercicio1;
 
 public class Persona implements Comparable<Persona> {
 
-	private int Dni;
+	private String Dni;
 	private String Nombre;
 	private String Apellido;
 
@@ -11,10 +11,10 @@ public class Persona implements Comparable<Persona> {
 	public Persona() {
 		this.Nombre = "";
 		this.Apellido = "";
-		this.Dni = 0;
+		this.Dni = "";
 	}
 
-	public Persona(String apellido, String nombre, int dni) {
+	public Persona(String apellido, String nombre, String dni) {
 		this.Apellido = apellido;
 		this.Nombre = nombre;
 		this.Dni = dni;
@@ -22,11 +22,11 @@ public class Persona implements Comparable<Persona> {
 	}
 
 	// gets y sets
-	public int getDni() {
+	public String getDni() {
 		return Dni;
 	}
 
-	public void setDni(int dni) {
+	public void setDni(String dni) {
 		this.Dni = dni;
 	}
 
@@ -50,13 +50,19 @@ public class Persona implements Comparable<Persona> {
 	public int compareTo(Persona persona) {
 
 		// ORDENAMIENTO por APELLIDO de A a Z
-		if (persona.Apellido.charAt(0) == this.Apellido.charAt(0))
-			return 0;
+		/*
+		 * if (persona.Apellido.charAt(0) == this.Apellido.charAt(0)) return 0;
+		 * 
+		 * if (persona.Apellido.charAt(0) < this.Apellido.charAt(0)) { return 1; }
+		 * return -1;
+		 */
 
-		if (persona.Apellido.charAt(0) < this.Apellido.charAt(0)) {
-			return 1;
-		}
-		return -1;
+		if (persona.getApellido().compareTo(this.Apellido) == 0 && persona.getNombre().compareTo(this.Nombre) == 0
+				&& persona.getDni().compareTo(this.Dni) == 0)
+			return 0;
+		if (persona.getApellido().compareTo(this.Apellido) > 0)
+			return -1;
+		return 1;
 	}
 
 	@Override
@@ -64,13 +70,13 @@ public class Persona implements Comparable<Persona> {
 		return "Apellido: " + this.Apellido + " " + "Nombre: " + this.Nombre + " " + "Dni: " + this.Dni;
 	}
 
-	public boolean verificarDniInvalido(String cadena){
+	public boolean verificarDniInvalido(String cadena) throws DniInvalidoException {
 		try {
 			Integer.parseInt(cadena);
 			return true;
 		} catch (NumberFormatException nfe) {
-			return false;
 		}
+		throw new DniInvalidoException();
 	}
 
 }

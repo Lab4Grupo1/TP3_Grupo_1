@@ -104,13 +104,14 @@ public class Archivo {
 		}
 	}
 
-	public TreeSet<Persona> leeArchivo()
-	{
+	public TreeSet<Persona> leeArchivo() {
 		System.out.println("Leyendo Archivo de Personas");
+		TreeSet<Persona> listaPersonasAux = new TreeSet<Persona>();
 		TreeSet<Persona> listaPersonas = new TreeSet<Persona>();
 		FileReader entrada;
 		String linea = "";
 		String[] contenido = null;
+		Persona persona = new Persona();
 
 		try {
 			entrada = new FileReader(rutaCargar);
@@ -119,36 +120,40 @@ public class Archivo {
 
 			while (linea != null) {
 
-				Persona persona = new Persona();
+				persona = new Persona();
 
 				if (linea != "") {
 
-					contenido = linea.split("\\n-");
+					contenido = linea.split("\n-");
 
 					for (int i = 0; i < contenido.length; i++) {
 
-						if (persona.verificarDniInvalido(contenido[i].split("-")[2])) {
-							if (contenido[i] != "") {
-								persona.setNombre(contenido[i].split("-")[0]);
-								persona.setApellido(contenido[i].split("-")[1]);
-								persona.setDni(Integer.parseInt(contenido[i].split("-")[2]));
-							}
-						}
-						if (persona.getDni() != 0) {
-							listaPersonas.add(persona);
+						if (contenido[i] != "") {
+							persona.setNombre(contenido[i].split("-")[0]);
+							persona.setApellido(contenido[i].split("-")[1]);
+							persona.setDni(contenido[i].split("-")[2]);
 						}
 					}
+					listaPersonasAux.add(persona);					
 				}
-
 				linea = miBuffer.readLine();
 			}
 			miBuffer.close();
 			entrada.close();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+		for (Persona item : listaPersonasAux) {
+			try {
+				if (persona.verificarDniInvalido(item.getDni())) {
+					listaPersonas.add(item);
+				}
+			} catch (DniInvalidoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return listaPersonas;
 	}
 }
