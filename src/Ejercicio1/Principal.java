@@ -1,26 +1,34 @@
 package Ejercicio1;
 
-import java.io.FileReader;
-import java.util.TreeSet;
-
 public class Principal {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
+
+		Archivo archivo = new Archivo();
+		archivo.setRutaCargar("Personas.txt");
+
+		if (archivo.existeCargar()) {
+			System.out.println("Existe archivo cargar");
+		} else {
+			System.out.println("No existe archivo cargar, entonces lo creo");
+			archivo.creaArchivoCargar();
+		}
+
+		archivo.setRutaGuardar("Resultado.txt");
+
+		if (archivo.existeGuardar()) {
+			System.out.println("Existe archivo guardar");
+		} else {
+			System.out.println("No existe archivo guardar, entonces lo creo");
+			archivo.creaArchivoGuardar();
+		}
+
 		try {
-			
-			Archivo leerArchivo1 = new Archivo();
-			leerArchivo1.setRuta("Personas.txt");
-			leerArchivo1.setRutaguardar("Resultado.txt");
-			
-			TreeSet<Persona> listaPersonas = new TreeSet<Persona>();
-			leerArchivo1.leeProcesoArchivo(listaPersonas);
-			System.out.println("encontr?");
-			
+			// LECTURA:
+			System.out.println("\n A CONTINUACIÓN LEE LAS LINEAS: ");
+			archivo.escribeArchivo(archivo.leeArchivo());
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
-
 }

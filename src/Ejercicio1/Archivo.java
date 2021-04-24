@@ -6,118 +6,149 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
 import java.util.TreeSet;
 
 public class Archivo {
-	
-	private String rutaleer;
-	private String rutaguardar;
-	
-	
-	public void leeProcesoArchivo(TreeSet<Persona> listaPersonas)
-	{
-	
-	// Leer el archivo llamado Personas Empresa.txt
-	FileReader entrada;
-	String[] contenido=null;
-	String linea="";
-	try {
-		entrada = new FileReader(rutaleer);
-		BufferedReader miBuffer = new BufferedReader(entrada);
-		//ArrayList<Persona> auxPersonas = new ArrayList<Persona>();
-		TreeSet<Persona> listaPersonas1 = new TreeSet<Persona>();
 
-		   //String linea = "";
-			while (linea != null) {
-				
-				contenido=linea.split("\\n-"); 
+	// Si en la variable ruta recibe solo un nombre de un archivo, entonces crea ese
+	// archivo dentro del proyecto
+	// Si en ruta recibe una ruta absoluta, entonces lo crea en esa ruta
 
-				for(int i=0; i < contenido.length; i++) {
-					if(contenido[i] != "") {
-					Persona persona = new Persona();
-					
-					persona.setNombre(contenido[i].split("-")[0]);
-					persona.setApellido(contenido[i].split("-")[1]);	
-					//persona.setDni(contenido[i].split("-")[2]);
-					persona.setDni(11);
-					
-					System.out.println(persona.toString());
-					
-					try {
-						// Solo resguardo las personas que tienen dni con 8 digitos usando
-						// un try personalizado
-						int castnumdni = Integer.parseInt(contenido[i].split("-")[2]);
-						persona.validarDNI(contenido[i].split("-")[2].length());
-						persona.setDni(castnumdni);
-						listaPersonas1.add(persona);
-					
-					} catch (Int_DniInvalido e) {
-						System.out.println("Este DNI no tiene 8 digitos.");
-					}
-					
-					}
-				}
-				
-				linea = miBuffer.readLine();
-				escribeArchivoprocesado(listaPersonas1);
+	private String rutaCargar;
+	private String rutaGuardar;
 
-			}
-			miBuffer.close();
-			entrada.close();
-										 
-
-	} catch (IOException e) {
-		System.out.println("No se encontro el archivo");
+	public String getRutaCargar() {
+		return rutaCargar;
 	}
-	
-	
 
+	public void setRutaCargar(String rutaCargar) {
+		this.rutaCargar = rutaCargar;
 	}
-	
-	public void escribeArchivoprocesado(TreeSet<Persona> listaPersonas)
-	{
-		 
-		try 
-		{	
-		String rutadondeguardo = "resultado.txt";
-		FileWriter entradaguardo = new FileWriter(rutadondeguardo, true);
-		BufferedWriter miBuffer = new BufferedWriter(entradaguardo);
-		
-		
 
-		
-		for (Persona item : listaPersonas) {
-			System.out.println(item.getNombre() + "-" + item.getApellido() + "-" + item.getDni() + "\n");
-			miBuffer.write(item.getNombre() + "-" + item.getApellido() + "-" + item.getDni() + "\n");
-		}
-		
-		miBuffer.close();
-		entradaguardo.close();
+	public String getRutaGuardar() {
+		return rutaGuardar;
+	}
+
+	public void setRutaGuardar(String rutaGuardar) {
+		this.rutaGuardar = rutaGuardar;
+	}
+
+	public boolean existeCargar() {
+		File archivo = new File(rutaCargar);
+		if (archivo.exists())
+			return true;
+		return false;
+	}
+
+	public boolean creaArchivoCargar() {
+		FileWriter escritura;
+		try {
+			escritura = new FileWriter(rutaCargar, true);
+			escritura.write("");
+			escritura.close();
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	}
-	
-	//Getter and setter
-	public String getRuta() {
-		return rutaleer;
+		return false;
 	}
 
-	public void setRuta(String ruta) {
-		this.rutaleer = ruta;
+	public boolean existeGuardar() {
+		File archivo = new File(rutaGuardar);
+		if (archivo.exists())
+			return true;
+		return false;
 	}
 
-	public String getRutaguardar() {
-		return rutaguardar;
+	public boolean creaArchivoGuardar() {
+		FileWriter escritura;
+		try {
+			escritura = new FileWriter(rutaGuardar, true);
+			escritura.write("");
+			escritura.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
-	public void setRutaguardar(String rutaguardar) {
-		this.rutaguardar = rutaguardar;
+	public void escribe_lineas(String frase) {
+		try {
+			FileWriter entrada = new FileWriter(rutaCargar, true);
+			BufferedWriter miBuffer = new BufferedWriter(entrada);
+			miBuffer.write(frase);
+			miBuffer.close();
+			entrada.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void escribeArchivo(TreeSet<Persona> listaPersonas) {
+		System.out.println("Guardando archivo");
+		try {
+			FileWriter guardar = new FileWriter(rutaGuardar, false);
+			BufferedWriter miBuffer = new BufferedWriter(guardar);
+
+			for (Persona item : listaPersonas) {
+				miBuffer.write(item.getApellido() + "-" + item.getNombre() + "-" + item.getDni() + "\n");
+			}
+
+			miBuffer.close();
+			guardar.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public TreeSet<Persona> leeArchivo()
+	{
+		System.out.println("Leyendo Archivo de Personas");
+		TreeSet<Persona> listaPersonas = new TreeSet<Persona>();
+		FileReader entrada;
+		String linea = "";
+		String[] contenido = null;
+
+		try {
+			entrada = new FileReader(rutaCargar);
+
+			BufferedReader miBuffer = new BufferedReader(entrada);
+
+			while (linea != null) {
+
+				Persona persona = new Persona();
+
+				if (linea != "") {
+
+					contenido = linea.split("\\n-");
+
+					for (int i = 0; i < contenido.length; i++) {
+
+						if (persona.verificarDniInvalido(contenido[i].split("-")[2])) {
+							if (contenido[i] != "") {
+								persona.setNombre(contenido[i].split("-")[0]);
+								persona.setApellido(contenido[i].split("-")[1]);
+								persona.setDni(Integer.parseInt(contenido[i].split("-")[2]));
+							}
+						}
+						if (persona.getDni() != 0) {
+							listaPersonas.add(persona);
+						}
+					}
+				}
+
+				linea = miBuffer.readLine();
+			}
+			miBuffer.close();
+			entrada.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return listaPersonas;
 	}
 }
